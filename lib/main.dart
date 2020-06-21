@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:passkey/home.dart';
+import 'package:passkey/screens/home.dart';
 
 void main() {
   runApp(App());
