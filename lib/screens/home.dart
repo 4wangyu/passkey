@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class Home extends StatefulWidget {
-  Home({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double iconSize = max(size.width * 0.1, 24);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-    );
+        body: Center(
+            child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.insert_drive_file),
+                    iconSize: iconSize,
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                  Text(
+                    'Open File',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    iconSize: iconSize,
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                  Text(
+                    'New File',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ]))));
   }
 }
