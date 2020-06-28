@@ -47,10 +47,8 @@ class _HomePageState extends State<HomePage> {
                     color: primaryColor,
                     iconSize: iconSize,
                     onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => ListPage()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => ListPage()));
                     },
                   ),
                   Text(

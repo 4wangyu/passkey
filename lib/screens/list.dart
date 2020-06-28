@@ -17,50 +17,64 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: primaryColor),
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Passwords",
+          style:
+              TextStyle(fontFamily: "Title", fontSize: 28, color: primaryColor),
+          overflow: TextOverflow.ellipsis,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+            ),
+            onPressed: () {},
+          ),
+          PopupMenuButton(
+            onSelected: (func) {
+              func();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text('New File'),
+                value: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              PopupMenuItem(
+                child: Text('Open...'),
+                value: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              PopupMenuItem(
+                child: Text('Save'),
+                value: () {},
+              ),
+              PopupMenuItem(
+                child: Text('Save As...'),
+                value: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Container(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Passwords",
-                  style: TextStyle(
-                      fontFamily: "Title", fontSize: 24, color: primaryColor),
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: primaryColor,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.more_horiz,
-                        color: primaryColor,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            )),
-          ),
           Expanded(
               child: passwords.isEmpty
                   ? Center(
                       child: Text(
-                        "No Passwords. \nClick '+' button to add a password.",
+                        "No passwords. \nClick '+' button to add a password.",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black54),
                       ),
