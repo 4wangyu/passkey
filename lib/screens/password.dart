@@ -53,7 +53,7 @@ class _PasswordPageState extends State<PasswordPage> {
               child: Column(
                 children: <Widget>[
                   pwdFormField("Title", titleController, validator: (value) {
-                    return value.isEmpty ? 'Please enter title' : null;
+                    return value.isEmpty ? 'Title is required.' : null;
                   }),
                   pwdFormField("Username", usernameController),
                   pwdFormField("Email", emailController),
@@ -71,7 +71,13 @@ class _PasswordPageState extends State<PasswordPage> {
                               fontSize: 16,
                               fontFamily: "Title"),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (pwdForm.currentState.validate()) {
+                            print('valid');
+                          } else {
+                            print('invalid');
+                          }
+                        },
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(32)),
                         color: primaryColor,
