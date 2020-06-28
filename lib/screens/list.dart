@@ -33,9 +33,7 @@ class _ListPageState extends State<ListPage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.search,
-            ),
+            icon: Icon(Icons.search),
             onPressed: () {},
           ),
           PopupMenuButton(
