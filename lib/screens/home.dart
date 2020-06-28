@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Theme.of(context).primaryColor;
     Size size = MediaQuery.of(context).size;
     double iconSize = max(size.width * 0.1, 24);
 
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   IconButton(
                     icon: Icon(Icons.insert_drive_file),
+                    color: primaryColor,
                     iconSize: iconSize,
                     onPressed: () {
                       setState(() {});
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   IconButton(
                     icon: Icon(Icons.add),
+                    color: primaryColor,
                     iconSize: iconSize,
                     onPressed: () {
                       Navigator.pushReplacement(
