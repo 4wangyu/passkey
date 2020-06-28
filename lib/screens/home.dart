@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class Home extends StatefulWidget {
+import 'package:passkey/screens/list.dart';
+
+class HomePage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeState extends State<Home> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -42,7 +44,10 @@ class _HomeState extends State<Home> {
                     icon: Icon(Icons.add),
                     iconSize: iconSize,
                     onPressed: () {
-                      setState(() {});
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => ListPage()));
                     },
                   ),
                   Text(
