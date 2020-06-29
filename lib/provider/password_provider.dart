@@ -6,5 +6,6 @@ class PasswordProvider with ChangeNotifier {
 
   addPassword(Password pwd) {
     passwords.add(pwd);
+    notifyListeners();
   }
 }

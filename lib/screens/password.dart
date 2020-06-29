@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:passkey/model/password_model.dart';
 import 'package:passkey/provider/password_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class PasswordPage extends StatefulWidget {
   @override
@@ -9,7 +11,8 @@ class PasswordPage extends StatefulWidget {
 }
 
 class _PasswordPageState extends State<PasswordPage> {
-  final pwdForm = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController titleController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -29,6 +32,18 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
+  Password getPassword() {
+    return Password(
+        id: Uuid().v4(),
+        title: titleController.text,
+        username: usernameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        pin: pinController.text,
+        tele: teleController.text,
+        remark: remarkController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
@@ -37,6 +52,7 @@ class _PasswordPageState extends State<PasswordPage> {
     final pwdProvider = Provider.of<PasswordProvider>(context);
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -53,7 +69,7 @@ class _PasswordPageState extends State<PasswordPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Form(
-              key: pwdForm,
+              key: _formKey,
               child: Column(
                 children: <Widget>[
                   pwdFormField("Title", titleController, validator: (value) {
@@ -76,10 +92,16 @@ class _PasswordPageState extends State<PasswordPage> {
                               fontFamily: "Title"),
                         ),
                         onPressed: () {
-                          if (pwdForm.currentState.validate()) {
-                            print('valid');
-                          } else {
-                            print('invalid');
+                          if (_formKey.currentState.validate()) {
+                            pwdProvider.addPassword(getPassword());
+                            _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "Password ${titleController.text} added!"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            _formKey.currentState.reset();
                           }
                         },
                         shape: RoundedRectangleBorder(

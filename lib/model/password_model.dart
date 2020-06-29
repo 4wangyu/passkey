@@ -11,7 +11,7 @@ String passwordToJson(Password data) {
 }
 
 class Password {
-  int id;
+  String id;
   String title;
   String username;
   String email;
