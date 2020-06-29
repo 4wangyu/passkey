@@ -13,7 +13,8 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
-    final passwords = Provider.of<PasswordProvider>(context).passwords;
+    final pwdProvider = Provider.of<PasswordProvider>(context);
+    final passwords = pwdProvider.getPasswords();
 
     return Scaffold(
       appBar: AppBar(
@@ -80,20 +81,14 @@ class _ListPageState extends State<ListPage> {
                         return Dismissible(
                           key: ObjectKey(password.id),
                           onDismissed: (direction) {
-                            var item = password;
-                            //To delete
-                            setState(() {
-                              passwords.removeAt(index);
-                            });
-                            //To show a snackbar with the UNDO button
+                            final cachedPwd = password;
+                            pwdProvider.deletePassword(password);
                             Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text("Password deleted"),
                                 action: SnackBarAction(
                                     label: "UNDO",
                                     onPressed: () {
-                                      setState(() {
-                                        passwords.insert(index, item);
-                                      });
+                                      pwdProvider.addPassword(cachedPwd);
                                     })));
                           },
                           child: InkWell(
@@ -108,8 +103,8 @@ class _ListPageState extends State<ListPage> {
                                 title: Text(
                                   password.title,
                                   style: TextStyle(
-                                    fontFamily: 'Title',
-                                  ),
+                                      fontFamily: 'Title',
+                                      fontWeight: FontWeight.w600),
                                 ),
                                 subtitle: Text(
                                   password.username ?? password.email,
