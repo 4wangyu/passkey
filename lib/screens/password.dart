@@ -46,16 +46,6 @@ class _PasswordPageState extends State<PasswordPage> {
     remarkController = TextEditingController(text: pwd?.remark);
   }
 
-  void copyToClipboard(BuildContext context) {
-    Clipboard.setData(new ClipboardData(text: passwordController.text));
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Copied to Clipboard"),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
   Password getPassword() {
     return Password(
         id: _isUpdate ? widget.password.id : Uuid().v4(),
@@ -96,15 +86,16 @@ class _PasswordPageState extends State<PasswordPage> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  pwdFormField("Title", titleController, validator: (value) {
+                  pwdFormField("Title", titleController, _scaffoldKey,
+                      validator: (value) {
                     return value.isEmpty ? 'Title is required.' : null;
                   }),
-                  pwdFormField("Username", usernameController),
-                  pwdFormField("Email", emailController),
-                  pwdFormField("Password", passwordController),
-                  pwdFormField("Pin", pinController),
-                  pwdFormField("Telephone", teleController),
-                  pwdFormField("Remarks", remarkController),
+                  pwdFormField("Username", usernameController, _scaffoldKey),
+                  pwdFormField("Email", emailController, _scaffoldKey),
+                  pwdFormField("Password", passwordController, _scaffoldKey),
+                  pwdFormField("Pin", pinController, _scaffoldKey),
+                  pwdFormField("Telephone", teleController, _scaffoldKey),
+                  pwdFormField("Remarks", remarkController, _scaffoldKey),
                   Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: MaterialButton(
@@ -151,6 +142,7 @@ class _PasswordPageState extends State<PasswordPage> {
 }
 
 Widget pwdFormField(String label, TextEditingController controller,
+    GlobalKey<ScaffoldState> scaffoldKey,
     {Function validator, bool obscureText = false}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
@@ -160,7 +152,21 @@ Widget pwdFormField(String label, TextEditingController controller,
       decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(fontFamily: "Subtitle"),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+          suffixIcon: controller.text.isEmpty
+              ? null
+              : IconButton(
+                  icon: Icon(Icons.content_copy),
+                  onPressed: () {
+                    Clipboard.setData(new ClipboardData(text: controller.text));
+                    scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text("Copied to Clipboard"),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                )),
       controller: controller,
     ),
   );
