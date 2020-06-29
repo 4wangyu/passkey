@@ -5,7 +5,9 @@ class PasswordProvider with ChangeNotifier {
   Map<String, Password> _passwordMap = new Map();
 
   List<Password> getPasswords() {
-    return _passwordMap.values.toList();
+    List<Password> pwdList = _passwordMap.values.toList();
+    pwdList.sort((a, b) => a.title.compareTo(b.title));
+    return pwdList;
   }
 
   void addPassword(Password pwd) {
@@ -13,7 +15,12 @@ class PasswordProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePassword(Password pwd) {}
+  void updatePassword(Password pwd) {
+    if (_passwordMap.containsKey(pwd.id)) {
+      _passwordMap.update(pwd.id, (value) => pwd);
+      notifyListeners();
+    }
+  }
 
   void deletePassword(Password pwd) {
     _passwordMap.remove(pwd.id);

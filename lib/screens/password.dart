@@ -6,6 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class PasswordPage extends StatefulWidget {
+  final Password password;
+
+  PasswordPage(this.password);
+
   @override
   _PasswordPageState createState() => _PasswordPageState();
 }
@@ -14,13 +18,33 @@ class _PasswordPageState extends State<PasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController pinController = TextEditingController();
-  TextEditingController teleController = TextEditingController();
-  TextEditingController remarkController = TextEditingController();
+  TextEditingController titleController;
+  TextEditingController usernameController;
+  TextEditingController emailController;
+  TextEditingController passwordController;
+  TextEditingController pinController;
+  TextEditingController teleController;
+  TextEditingController remarkController;
+
+  bool get _isUpdate {
+    return widget.password != null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initControllers(widget.password);
+  }
+
+  void _initControllers(Password pwd) {
+    titleController = TextEditingController(text: pwd?.title);
+    usernameController = TextEditingController(text: pwd?.username);
+    emailController = TextEditingController(text: pwd?.email);
+    passwordController = TextEditingController(text: pwd?.password);
+    pinController = TextEditingController(text: pwd?.pin);
+    teleController = TextEditingController(text: pwd?.tele);
+    remarkController = TextEditingController(text: pwd?.remark);
+  }
 
   void copyToClipboard(BuildContext context) {
     Clipboard.setData(new ClipboardData(text: passwordController.text));
@@ -34,7 +58,7 @@ class _PasswordPageState extends State<PasswordPage> {
 
   Password getPassword() {
     return Password(
-        id: Uuid().v4(),
+        id: _isUpdate ? widget.password.id : Uuid().v4(),
         title: titleController.text,
         username: usernameController.text,
         email: emailController.text,
@@ -58,7 +82,7 @@ class _PasswordPageState extends State<PasswordPage> {
           elevation: 0.0,
           iconTheme: IconThemeData(color: primaryColor),
           title: Text(
-            "Add Password",
+            "${_isUpdate ? 'Edit' : 'Add'} Password",
             style: TextStyle(
                 fontFamily: "Title", fontSize: 28, color: primaryColor),
             overflow: TextOverflow.ellipsis,
@@ -85,7 +109,7 @@ class _PasswordPageState extends State<PasswordPage> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: MaterialButton(
                         child: Text(
-                          "Save",
+                          "${_isUpdate ? 'Update' : 'Save'}",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -93,15 +117,21 @@ class _PasswordPageState extends State<PasswordPage> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            pwdProvider.addPassword(getPassword());
+                            if (_isUpdate) {
+                              pwdProvider.updatePassword(getPassword());
+                            } else {
+                              pwdProvider.addPassword(getPassword());
+                            }
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
                                 content: Text(
-                                    "Password ${titleController.text} added!"),
+                                    "Password ${titleController.text} ${_isUpdate ? 'updated' : 'added'}!"),
                                 duration: Duration(seconds: 2),
                               ),
                             );
-                            _formKey.currentState.reset();
+                            if (!_isUpdate) {
+                              _formKey.currentState.reset();
+                            }
                           }
                         },
                         shape: RoundedRectangleBorder(

@@ -97,7 +97,7 @@ class _ListPageState extends State<ListPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          PasswordPage()));
+                                          PasswordPage(password)));
                             },
                             child: ListTile(
                                 title: Text(
@@ -125,7 +125,7 @@ class _ListPageState extends State<ListPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => PasswordPage()));
+                  builder: (BuildContext context) => PasswordPage(null)));
         },
       ),
     );
