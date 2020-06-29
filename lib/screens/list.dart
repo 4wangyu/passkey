@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:passkey/model/password_model.dart';
+import 'package:passkey/provider/password_provider.dart';
 import 'package:passkey/screens/password.dart';
+import 'package:provider/provider.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -8,16 +10,10 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-  List<Password> passwords = List<Password>(0);
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
+    final passwords = Provider.of<PasswordProvider>(context).passwords;
 
     return Scaffold(
       appBar: AppBar(

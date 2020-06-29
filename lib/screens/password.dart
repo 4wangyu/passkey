@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:passkey/provider/password_provider.dart';
+import 'package:provider/provider.dart';
 
 class PasswordPage extends StatefulWidget {
   @override
@@ -31,6 +33,8 @@ class _PasswordPageState extends State<PasswordPage> {
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
     Size size = MediaQuery.of(context).size;
+
+    final pwdProvider = Provider.of<PasswordProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
