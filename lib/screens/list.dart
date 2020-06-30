@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:passkey/model/password_model.dart';
 import 'package:passkey/provider/password_provider.dart';
+import 'package:passkey/screens/encrypt.dart';
 import 'package:passkey/screens/password.dart';
 import 'package:provider/provider.dart';
 
@@ -51,12 +52,13 @@ class _ListPageState extends State<ListPage> {
                 },
               ),
               PopupMenuItem(
-                child: Text('Save'),
-                value: () {},
-              ),
-              PopupMenuItem(
                 child: Text('Save As...'),
-                value: () {},
+                value: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => EncryptPage()));
+                },
               ),
             ],
           ),
