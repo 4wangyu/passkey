@@ -1,8 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:passkey/model/password_model.dart';
 
 class PasswordProvider with ChangeNotifier {
   Map<String, Password> _passwordMap = new Map();
+
+  void loadPasswords(String pwdsStr) {
+    List<dynamic> pwds = jsonDecode(pwdsStr);
+    pwds.forEach((p) {
+      final pwd = Password.fromJson(p);
+      _passwordMap[pwd.id] = pwd;
+    });
+    notifyListeners();
+  }
 
   List<Password> getPasswords() {
     List<Password> pwdList = _passwordMap.values.toList();

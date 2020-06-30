@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:file_chooser/file_chooser.dart';
+import 'package:flutter/material.dart';
+import 'package:passkey/screens/decrypt.dart';
 import 'package:passkey/screens/list.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,13 +29,19 @@ class _HomePageState extends State<HomePage> {
               Column(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.insert_drive_file),
-                    color: primaryColor,
-                    iconSize: iconSize,
-                    onPressed: () {
-                      setState(() {});
-                    },
-                  ),
+                      icon: Icon(Icons.insert_drive_file),
+                      color: primaryColor,
+                      iconSize: iconSize,
+                      onPressed: () async {
+                        final FileChooserResult result = await showOpenPanel();
+                        if (!result.canceled) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      DecryptPage(result.paths.first)));
+                        }
+                      }),
                   Text(
                     'Open File',
                     overflow: TextOverflow.ellipsis,
