@@ -28,6 +28,10 @@ dependencies:
   cupertino_icons: ^0.1.3
   provider: ^4.1.3
   uuid: ^2.1.0
+  file_chooser:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/file_chooser
 
 dev_dependencies:
   flutter_test:
