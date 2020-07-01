@@ -65,7 +65,7 @@ class _DecryptPageState extends State<DecryptPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
-                obscureText: true,
+                // obscureText: true,
                 maxLength: 32,
                 decoration: InputDecoration(
                     labelText: "PassKey",
@@ -84,19 +84,51 @@ class _DecryptPageState extends State<DecryptPage> {
                         color: Colors.white, fontSize: 16, fontFamily: "Title"),
                   ),
                   onPressed: () async {
+                    String passkey = passkeyController.text;
                     final file = File(widget.filePath);
                     String contents = file.readAsStringSync();
                     final encrypted = decrypt.Encrypted.fromBase64(contents);
-                    final key = decrypt.Key.fromUtf8(
-                        passkeyController.text.padRight(32));
+                    final key = decrypt.Key.fromUtf8(passkey.padRight(32));
                     final decrypter = decrypt.Encrypter(decrypt.AES(key));
-                    final decrypted = decrypter.decrypt(encrypted,
-                        iv: decrypt.IV.fromLength(16));
-                    pwdProvider.loadPasswords(decrypted);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => ListPage()));
+                    try {
+                      final decrypted = decrypter.decrypt(encrypted,
+                          iv: decrypt.IV.fromLength(16));
+                      pwdProvider.loadPasswords(decrypted);
+
+                      // save file name, path and passkey in memory
+                      final fileName = widget.filePath.split('/').last;
+                      pwdProvider.setFileName(fileName);
+                      pwdProvider.filePath = widget.filePath;
+                      pwdProvider.passkey = passkey;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => ListPage()));
+                    } catch (e) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                "Wrong PassKey!",
+                                style: TextStyle(
+                                    fontFamily: "Title", color: primaryColor),
+                              ),
+                              content: Text(
+                                "Wrong PassKey: $passkey",
+                                style: TextStyle(fontFamily: "Subtitle"),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Dismiss"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    }
                   },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32)),
