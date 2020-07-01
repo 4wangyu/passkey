@@ -17,9 +17,11 @@ class App extends StatelessWidget {
         child: MaterialApp(
             title: 'passkey',
             theme: ThemeData(
-              primarySwatch: Colors.teal,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
+                primarySwatch: Colors.teal,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder()
+                })),
             home: HomePage(),
             debugShowCheckedModeBanner: false));
   }
