@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:file_chooser/file_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:passkey/screens/decrypt.dart';
-import 'package:passkey/screens/list.dart';
+import 'package:passkey/screens/encrypt.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                     iconSize: iconSize,
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ListPage()));
+                          builder: (BuildContext context) => EncryptPage()));
                     },
                   ),
                   Text(

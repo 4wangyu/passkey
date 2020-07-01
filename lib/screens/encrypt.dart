@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:file_chooser/file_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:passkey/provider/password_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:file_chooser/file_chooser.dart';
+import 'package:passkey/screens/list.dart';
 import 'package:path/path.dart' as path;
-import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:provider/provider.dart';
 
 class EncryptPage extends StatefulWidget {
   @override
@@ -14,9 +15,10 @@ class EncryptPage extends StatefulWidget {
 }
 
 class _EncryptPageState extends State<EncryptPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
-  TextEditingController masterPassController = TextEditingController();
-  TextEditingController filePathController = TextEditingController();
+  TextEditingController passkeyController = TextEditingController();
+  TextEditingController fileNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class _EncryptPageState extends State<EncryptPage> {
     final passwords = pwdProvider.getPasswords();
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -56,27 +59,27 @@ class _EncryptPageState extends State<EncryptPage> {
                         suffixText: ".safe",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16))),
-                    controller: filePathController,
+                    controller: fileNameController,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
-                    obscureText: true,
+                    // obscureText: true,
                     maxLength: 32,
                     decoration: InputDecoration(
-                        labelText: "Master Passord",
+                        labelText: "PassKey",
                         labelStyle: TextStyle(fontFamily: "Subtitle"),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16))),
-                    controller: masterPassController,
+                    controller: passkeyController,
                   ),
                 ),
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: MaterialButton(
                       child: Text(
-                        "Save",
+                        "Confirm",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -86,7 +89,7 @@ class _EncryptPageState extends State<EncryptPage> {
                         if (_formKey.currentState.validate()) {
                           final FileChooserResult result = await showSavePanel(
                             suggestedFileName:
-                                path.basename(filePathController.text),
+                                path.basename(fileNameController.text),
                             allowedFileTypes: [
                               FileTypeFilterGroup(
                                   label: 'passkey', fileExtensions: ['safe'])
@@ -94,15 +97,54 @@ class _EncryptPageState extends State<EncryptPage> {
                             confirmButtonText: 'Confirm',
                           );
                           if (!result.canceled) {
+                            // encrypt & write to file
                             final file = File(result.paths.first);
                             final key = encrypt.Key.fromUtf8(
-                                masterPassController.text.padRight(32));
+                                passkeyController.text.padRight(32));
                             final encrypter =
                                 encrypt.Encrypter(encrypt.AES(key));
                             final encrypted = encrypter.encrypt(
                                 jsonEncode(passwords),
                                 iv: encrypt.IV.fromLength(16));
                             file.writeAsString(encrypted.base64);
+
+                            // save file name, path and passkey in memory
+                            final fileName = result.paths.first.split('/').last;
+                            final passkey = passkeyController.text;
+                            fileNameController.text =
+                                fileName.substring(0, fileName.length - 5);
+                            pwdProvider.setFileName(fileName);
+                            pwdProvider.filePath = result.paths.first;
+                            pwdProvider.passkey = passkey;
+
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                      "File Created Successfully!",
+                                      style: TextStyle(
+                                          fontFamily: "Title",
+                                          color: primaryColor),
+                                    ),
+                                    content: Text(
+                                      "File Name: $fileName \n\nPasskey: $passkey",
+                                      style: TextStyle(fontFamily: "Subtitle"),
+                                    ),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text("Cool"),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ListPage()));
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
                           }
                         }
                       },

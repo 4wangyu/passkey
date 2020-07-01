@@ -17,13 +17,13 @@ class DecryptPage extends StatefulWidget {
 
 class _DecryptPageState extends State<DecryptPage> {
   TextEditingController filePathController;
-  TextEditingController masterPassController;
+  TextEditingController passkeyController;
 
   @override
   void initState() {
     super.initState();
     filePathController = TextEditingController(text: widget.filePath);
-    masterPassController = TextEditingController();
+    passkeyController = TextEditingController();
   }
 
   @override
@@ -68,11 +68,11 @@ class _DecryptPageState extends State<DecryptPage> {
                 obscureText: true,
                 maxLength: 32,
                 decoration: InputDecoration(
-                    labelText: "Master Passord",
+                    labelText: "PassKey",
                     labelStyle: TextStyle(fontFamily: "Subtitle"),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16))),
-                controller: masterPassController,
+                controller: passkeyController,
               ),
             ),
             Padding(
@@ -88,7 +88,7 @@ class _DecryptPageState extends State<DecryptPage> {
                     String contents = file.readAsStringSync();
                     final encrypted = decrypt.Encrypted.fromBase64(contents);
                     final key = decrypt.Key.fromUtf8(
-                        masterPassController.text.padRight(32));
+                        passkeyController.text.padRight(32));
                     final decrypter = decrypt.Encrypter(decrypt.AES(key));
                     final decrypted = decrypter.decrypt(encrypted,
                         iv: decrypt.IV.fromLength(16));

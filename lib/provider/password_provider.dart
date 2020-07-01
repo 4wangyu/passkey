@@ -5,6 +5,18 @@ import 'package:passkey/model/password_model.dart';
 
 class PasswordProvider with ChangeNotifier {
   Map<String, Password> _passwordMap = new Map();
+  String _fileName;
+  String filePath;
+  String passkey;
+
+  String getFileName() {
+    return _fileName;
+  }
+
+  void setFileName(String fn) {
+    _fileName = fn;
+    notifyListeners();
+  }
 
   void loadPasswords(String pwdsStr) {
     List<dynamic> pwds = jsonDecode(pwdsStr);
