@@ -1,6 +1,8 @@
+import 'package:file_chooser/file_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:passkey/model/password_model.dart';
 import 'package:passkey/provider/password_provider.dart';
+import 'package:passkey/screens/decrypt.dart';
 import 'package:passkey/screens/encrypt.dart';
 import 'package:passkey/screens/password.dart';
 import 'package:provider/provider.dart';
@@ -51,8 +53,20 @@ class _ListPageState extends State<ListPage> {
               ),
               PopupMenuItem(
                 child: Text('Open...'),
-                value: () {
-                  Navigator.of(context).pop();
+                value: () async {
+                  final FileChooserResult result = await showOpenPanel(
+                    allowedFileTypes: [
+                      FileTypeFilterGroup(
+                          label: 'passkey', fileExtensions: ['safe'])
+                    ],
+                  );
+                  if (!result.canceled) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                DecryptPage(result.paths.first)));
+                  }
                 },
               ),
               PopupMenuItem(
