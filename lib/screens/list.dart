@@ -24,7 +24,7 @@ class _ListPageState extends State<ListPage> {
         iconTheme: IconThemeData(color: primaryColor),
         automaticallyImplyLeading: false,
         title: Text(
-          "Passwords",
+          pwdProvider.getFileName() ?? 'Passwords',
           style:
               TextStyle(fontFamily: "Title", fontSize: 28, color: primaryColor),
           overflow: TextOverflow.ellipsis,

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:passkey/model/password_model.dart';
 
 class PasswordProvider with ChangeNotifier {
@@ -36,17 +38,29 @@ class PasswordProvider with ChangeNotifier {
   void addPassword(Password pwd) {
     _passwordMap[pwd.id] = pwd;
     notifyListeners();
+    _updateFile();
   }
 
   void updatePassword(Password pwd) {
     if (_passwordMap.containsKey(pwd.id)) {
       _passwordMap.update(pwd.id, (value) => pwd);
       notifyListeners();
+      _updateFile();
     }
   }
 
   void deletePassword(Password pwd) {
     _passwordMap.remove(pwd.id);
     notifyListeners();
+    _updateFile();
+  }
+
+  void _updateFile() {
+    final file = File(filePath);
+    final key = encrypt.Key.fromUtf8(passkey.padRight(32));
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final encrypted = encrypter.encrypt(jsonEncode(getPasswords()),
+        iv: encrypt.IV.fromLength(16));
+    file.writeAsString(encrypted.base64);
   }
 }
