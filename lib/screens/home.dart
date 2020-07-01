@@ -33,7 +33,12 @@ class _HomePageState extends State<HomePage> {
                       color: primaryColor,
                       iconSize: iconSize,
                       onPressed: () async {
-                        final FileChooserResult result = await showOpenPanel();
+                        final FileChooserResult result = await showOpenPanel(
+                          allowedFileTypes: [
+                            FileTypeFilterGroup(
+                                label: 'passkey', fileExtensions: ['safe'])
+                          ],
+                        );
                         if (!result.canceled) {
                           Navigator.push(
                               context,

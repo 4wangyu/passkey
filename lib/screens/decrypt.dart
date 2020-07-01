@@ -31,7 +31,6 @@ class _DecryptPageState extends State<DecryptPage> {
     var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
     final pwdProvider = Provider.of<PasswordProvider>(context);
-    final passwords = pwdProvider.getPasswords();
 
     return Scaffold(
       appBar: AppBar(
