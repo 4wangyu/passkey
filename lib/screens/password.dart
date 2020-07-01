@@ -26,6 +26,9 @@ class _PasswordPageState extends State<PasswordPage> {
   TextEditingController teleController;
   TextEditingController remarkController;
 
+  bool _obscurePwd = true;
+  bool _obscurePin = true;
+
   bool get _isUpdate {
     return widget.password != null;
   }
@@ -92,8 +95,18 @@ class _PasswordPageState extends State<PasswordPage> {
                   }),
                   pwdFormField("Username", usernameController, _scaffoldKey),
                   pwdFormField("Email", emailController, _scaffoldKey),
-                  pwdFormField("Password", passwordController, _scaffoldKey),
-                  pwdFormField("Pin", pinController, _scaffoldKey),
+                  pwdFormField("Password", passwordController, _scaffoldKey,
+                      obscureText: _obscurePwd, setObscureText: () {
+                    setState(() {
+                      _obscurePwd = !_obscurePwd;
+                    });
+                  }),
+                  pwdFormField("Pin", pinController, _scaffoldKey,
+                      obscureText: _obscurePin, setObscureText: () {
+                    setState(() {
+                      _obscurePin = !_obscurePin;
+                    });
+                  }),
                   pwdFormField("Telephone", teleController, _scaffoldKey),
                   pwdFormField("Remarks", remarkController, _scaffoldKey),
                   Padding(
@@ -143,30 +156,44 @@ class _PasswordPageState extends State<PasswordPage> {
 
 Widget pwdFormField(String label, TextEditingController controller,
     GlobalKey<ScaffoldState> scaffoldKey,
-    {Function validator, bool obscureText = false}) {
+    {Function validator, bool obscureText, Function setObscureText}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: TextFormField(
       validator: validator,
-      obscureText: obscureText,
+      obscureText: obscureText ?? false,
       decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(fontFamily: "Subtitle"),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-          suffixIcon: controller.text.isEmpty
-              ? null
-              : IconButton(
-                  icon: Icon(Icons.content_copy),
-                  onPressed: () {
-                    Clipboard.setData(new ClipboardData(text: controller.text));
-                    scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text("Copied to Clipboard"),
-                        duration: Duration(seconds: 2),
+          suffixIcon: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                controller.text.isEmpty
+                    ? SizedBox.shrink()
+                    : IconButton(
+                        icon: Icon(Icons.content_copy),
+                        onPressed: () {
+                          Clipboard.setData(
+                              new ClipboardData(text: controller.text));
+                          scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text("Copied to Clipboard"),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                )),
+                obscureText == null
+                    ? SizedBox.shrink()
+                    : IconButton(
+                        icon: Icon(obscureText ? Icons.lock : Icons.lock_open),
+                        onPressed: () {
+                          setObscureText();
+                        },
+                      ),
+              ])),
       controller: controller,
     ),
   );
