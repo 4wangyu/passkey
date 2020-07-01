@@ -42,7 +42,11 @@ class _ListPageState extends State<ListPage> {
               PopupMenuItem(
                 child: Text('New File'),
                 value: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              EncryptPage(true)));
                 },
               ),
               PopupMenuItem(
@@ -57,7 +61,8 @@ class _ListPageState extends State<ListPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => EncryptPage()));
+                          builder: (BuildContext context) =>
+                              EncryptPage(false)));
                 },
               ),
             ],

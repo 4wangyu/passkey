@@ -61,7 +61,8 @@ class _HomePageState extends State<HomePage> {
                     iconSize: iconSize,
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => EncryptPage()));
+                          builder: (BuildContext context) =>
+                              EncryptPage(true)));
                     },
                   ),
                   Text(

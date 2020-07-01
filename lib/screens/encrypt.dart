@@ -10,6 +10,10 @@ import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
 class EncryptPage extends StatefulWidget {
+  final bool newFile;
+
+  EncryptPage(this.newFile);
+
   @override
   _EncryptPageState createState() => _EncryptPageState();
 }
@@ -34,7 +38,7 @@ class _EncryptPageState extends State<EncryptPage> {
           elevation: 0.0,
           iconTheme: IconThemeData(color: primaryColor),
           title: Text(
-            "Create File",
+            widget.newFile ? "Create File" : "Save As",
             style: TextStyle(
                 fontFamily: "Title", fontSize: 28, color: primaryColor),
             overflow: TextOverflow.ellipsis,
@@ -104,18 +108,21 @@ class _EncryptPageState extends State<EncryptPage> {
                             final encrypter =
                                 encrypt.Encrypter(encrypt.AES(key));
                             final encrypted = encrypter.encrypt(
-                                jsonEncode(passwords),
+                                jsonEncode(widget.newFile ? [] : passwords),
                                 iv: encrypt.IV.fromLength(16));
                             file.writeAsString(encrypted.base64);
 
                             // save file name, path and passkey in memory
                             final fileName = result.paths.first.split('/').last;
                             final passkey = passkeyController.text;
-                            fileNameController.text =
-                                fileName.substring(0, fileName.length - 5);
-                            pwdProvider.setFileName(fileName);
-                            pwdProvider.filePath = result.paths.first;
-                            pwdProvider.passkey = passkey;
+                            if (widget.newFile) {
+                              fileNameController.text =
+                                  fileName.substring(0, fileName.length - 5);
+                              pwdProvider.setFileName(fileName);
+                              pwdProvider.filePath = result.paths.first;
+                              pwdProvider.passkey = passkey;
+                              pwdProvider.loadPasswords('[]');
+                            }
 
                             showDialog(
                                 context: context,
@@ -135,11 +142,19 @@ class _EncryptPageState extends State<EncryptPage> {
                                       FlatButton(
                                         child: Text("Cool"),
                                         onPressed: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          ListPage()));
+                                          if (widget.newFile) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        ListPage()));
+                                          } else {
+                                            var count = 0;
+                                            Navigator.popUntil(context,
+                                                (route) {
+                                              return count++ == 2;
+                                            });
+                                          }
                                         },
                                       )
                                     ],
