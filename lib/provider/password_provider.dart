@@ -21,6 +21,7 @@ class PasswordProvider with ChangeNotifier {
   }
 
   void loadPasswords(String pwdsStr) {
+    _passwordMap = new Map();
     List<dynamic> pwds = jsonDecode(pwdsStr);
     pwds.forEach((p) {
       final pwd = Password.fromJson(p);
