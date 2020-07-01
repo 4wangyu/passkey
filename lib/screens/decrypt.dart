@@ -18,6 +18,7 @@ class DecryptPage extends StatefulWidget {
 class _DecryptPageState extends State<DecryptPage> {
   TextEditingController filePathController;
   TextEditingController passkeyController;
+  bool _obscureText = true;
 
   @override
   void initState() {
@@ -65,9 +66,17 @@ class _DecryptPageState extends State<DecryptPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
-                // obscureText: true,
+                obscureText: _obscureText,
                 maxLength: 32,
                 decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText ? Icons.lock : Icons.lock_open),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                     labelText: "PassKey",
                     labelStyle: TextStyle(fontFamily: "Subtitle"),
                     border: OutlineInputBorder(

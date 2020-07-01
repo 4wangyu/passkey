@@ -23,6 +23,7 @@ class _EncryptPageState extends State<EncryptPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController passkeyController = TextEditingController();
   TextEditingController fileNameController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +70,18 @@ class _EncryptPageState extends State<EncryptPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
-                    // obscureText: true,
+                    obscureText: _obscureText,
                     maxLength: 32,
                     decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon:
+                              Icon(_obscureText ? Icons.lock : Icons.lock_open),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                         labelText: "PassKey",
                         labelStyle: TextStyle(fontFamily: "Subtitle"),
                         border: OutlineInputBorder(
