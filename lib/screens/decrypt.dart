@@ -66,6 +66,7 @@ class _DecryptPageState extends State<DecryptPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                autofocus: true,
                 obscureText: _obscureText,
                 maxLength: 32,
                 decoration: InputDecoration(

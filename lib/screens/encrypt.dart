@@ -55,6 +55,7 @@ class _EncryptPageState extends State<EncryptPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
+                    autofocus: true,
                     validator: (value) {
                       return value.isEmpty ? 'File name is required.' : null;
                     },

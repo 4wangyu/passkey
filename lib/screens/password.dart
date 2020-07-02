@@ -90,7 +90,7 @@ class _PasswordPageState extends State<PasswordPage> {
               child: Column(
                 children: <Widget>[
                   pwdFormField("Title", titleController, _scaffoldKey,
-                      validator: (value) {
+                      autofocus: true, validator: (value) {
                     return value.isEmpty ? 'Title is required.' : null;
                   }),
                   pwdFormField("Username", usernameController, _scaffoldKey),
@@ -156,10 +156,14 @@ class _PasswordPageState extends State<PasswordPage> {
 
 Widget pwdFormField(String label, TextEditingController controller,
     GlobalKey<ScaffoldState> scaffoldKey,
-    {Function validator, bool obscureText, Function setObscureText}) {
+    {Function validator,
+    bool autofocus = false,
+    bool obscureText,
+    Function setObscureText}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: TextFormField(
+      autofocus: autofocus,
       validator: validator,
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
