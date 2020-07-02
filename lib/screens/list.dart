@@ -139,7 +139,8 @@ class _ListPageState extends State<ListPage> {
                         style: TextStyle(color: Colors.black54),
                       ),
                     )
-                  : ListView.builder(
+                  : Scrollbar(
+                      child: ListView.builder(
                       itemCount: filteredPwds.length,
                       itemBuilder: (BuildContext context, int index) {
                         Password password = filteredPwds[index];
@@ -183,7 +184,7 @@ class _ListPageState extends State<ListPage> {
                           ),
                         );
                       },
-                    )),
+                    ))),
         ],
       ),
       floatingActionButton: FloatingActionButton(

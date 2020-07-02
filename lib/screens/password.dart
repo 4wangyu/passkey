@@ -80,7 +80,8 @@ class _PasswordPageState extends State<PasswordPage> {
                 fontFamily: "Title", fontSize: 28, color: primaryColor),
             overflow: TextOverflow.ellipsis,
           )),
-      body: SingleChildScrollView(
+      body: Scrollbar(
+          child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +150,7 @@ class _PasswordPageState extends State<PasswordPage> {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }
