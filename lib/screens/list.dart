@@ -13,81 +13,125 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
+  bool search = false;
+  String searchKey = '';
+
+  List<Password> _filterPwds(List<Password> pwds) {
+    return pwds
+        .where((pwd) =>
+            pwd.title.toLowerCase().contains(searchKey.toLowerCase()) ||
+            pwd.username.toLowerCase().contains(searchKey.toLowerCase()) ||
+            pwd.email.toLowerCase().contains(searchKey.toLowerCase()))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
     final pwdProvider = Provider.of<PasswordProvider>(context);
     final passwords = pwdProvider.getPasswords();
+    final filteredPwds = _filterPwds(passwords);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: primaryColor),
-        automaticallyImplyLeading: false,
-        title: Text(
-          pwdProvider.getFileName() ?? 'Passwords',
-          style:
-              TextStyle(fontFamily: "Title", fontSize: 28, color: primaryColor),
-          overflow: TextOverflow.ellipsis,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          ),
-          PopupMenuButton(
-            onSelected: (func) {
-              func();
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text('New File'),
-                value: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              EncryptPage(true)));
+      appBar: search
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              iconTheme: IconThemeData(color: primaryColor),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    search = false;
+                    searchKey = '';
+                  });
                 },
               ),
-              PopupMenuItem(
-                child: Text('Open...'),
-                value: () async {
-                  final FileChooserResult result = await showOpenPanel(
-                    allowedFileTypes: [
-                      FileTypeFilterGroup(
-                          label: 'passkey', fileExtensions: ['safe'])
-                    ],
-                  );
-                  if (!result.canceled) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                DecryptPage(result.paths.first)));
-                  }
+              title: TextField(
+                onChanged: (query) async {
+                  setState(() {
+                    searchKey = query;
+                  });
                 },
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search by title/username/email',
+                  border: InputBorder.none,
+                ),
               ),
-              PopupMenuItem(
-                child: Text('Save As...'),
-                value: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              EncryptPage(false)));
-                },
+            )
+          : AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              iconTheme: IconThemeData(color: primaryColor),
+              automaticallyImplyLeading: false,
+              title: Text(
+                pwdProvider.getFileName() ?? 'Passwords',
+                style: TextStyle(
+                    fontFamily: "Title", fontSize: 28, color: primaryColor),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-        ],
-      ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    setState(() {
+                      search = true;
+                    });
+                  },
+                ),
+                PopupMenuButton(
+                  onSelected: (func) {
+                    func();
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text('New File'),
+                      value: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EncryptPage(true)));
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text('Open...'),
+                      value: () async {
+                        final FileChooserResult result = await showOpenPanel(
+                          allowedFileTypes: [
+                            FileTypeFilterGroup(
+                                label: 'passkey', fileExtensions: ['safe'])
+                          ],
+                        );
+                        if (!result.canceled) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      DecryptPage(result.paths.first)));
+                        }
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text('Save As...'),
+                      value: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EncryptPage(false)));
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-              child: passwords.isEmpty
+              child: filteredPwds.isEmpty
                   ? Center(
                       child: Text(
                         "No passwords. \nClick '+' button to add a password.",
@@ -96,9 +140,9 @@ class _ListPageState extends State<ListPage> {
                       ),
                     )
                   : ListView.builder(
-                      itemCount: passwords.length,
+                      itemCount: filteredPwds.length,
                       itemBuilder: (BuildContext context, int index) {
-                        Password password = passwords[index];
+                        Password password = filteredPwds[index];
                         return Dismissible(
                           key: ObjectKey(password.id),
                           onDismissed: (direction) {
@@ -128,7 +172,10 @@ class _ListPageState extends State<ListPage> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 subtitle: Text(
-                                  password.username ?? password.email,
+                                  [password.username, password.email]
+                                      .where((v) => v.isNotEmpty)
+                                      .toList()
+                                      .join(', '),
                                   style: TextStyle(
                                     fontFamily: 'Subtitle',
                                   ),
