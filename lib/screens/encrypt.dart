@@ -130,7 +130,7 @@ class _EncryptPageState extends State<EncryptPage> {
                               fileNameController.text =
                                   fileName.substring(0, fileName.length - 5);
                               pwdProvider.setFileName(fileName);
-                              pwdProvider.filePath = result.paths.first;
+                              pwdProvider.setFilePath(result.paths.first);
                               pwdProvider.passkey = passkey;
                               pwdProvider.loadPasswords('[]');
                             }

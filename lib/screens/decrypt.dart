@@ -108,7 +108,7 @@ class _DecryptPageState extends State<DecryptPage> {
                       // save file name, path and passkey in memory
                       final fileName = widget.filePath.split('/').last;
                       pwdProvider.setFileName(fileName);
-                      pwdProvider.filePath = widget.filePath;
+                      pwdProvider.setFilePath(widget.filePath);
                       pwdProvider.passkey = passkey;
                       Navigator.push(
                           context,
