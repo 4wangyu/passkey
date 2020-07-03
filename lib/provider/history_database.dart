@@ -67,7 +67,7 @@ class HistoryDatabase {
         _deleteHistory(allHistory[i]);
       }
     }
-    return allHistory.sublist(0, min(5, allHistory.length));
+    return allHistory.take(5).toList();
   }
 
   Future<int> _deleteHistory(History history) async {
