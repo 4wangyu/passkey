@@ -36,7 +36,7 @@ class HistoryDatabase {
     History h = await _getHistory(history.path);
     if (h != null) {
       int res = await dbClient.update("$_historyTable", history.toMap(),
-          where: "path = ?", whereArgs: ["'${history.path}'"]);
+          where: "path = ?", whereArgs: [history.path]);
       return res;
     } else {
       int res = await dbClient.insert(_historyTable, history.toMap());
@@ -57,11 +57,10 @@ class HistoryDatabase {
   Future<List<History>> getRecentHistory() async {
     var dbClient = await db;
     List allItems = await dbClient.query("$_historyTable");
-    print(allItems);
     List<History> allHistory =
         allItems.map((el) => History.fromMap(el)).toList();
     allHistory.sort((b, a) => a.date.compareTo(b.date)); // descending
-    // only store 5 latest file paths
+    // only store latest 5 file paths
     if (allHistory.length > 5) {
       for (var i = 5; i < allHistory.length; i++) {
         _deleteHistory(allHistory[i]);
@@ -72,8 +71,8 @@ class HistoryDatabase {
 
   Future<int> _deleteHistory(History history) async {
     var dbClient = await db;
-    int res = await dbClient.delete("$_historyTable",
-        where: "path = ?", whereArgs: ["'${history.path}'"]);
+    int res = await dbClient
+        .delete("$_historyTable", where: "path = ?", whereArgs: [history.path]);
     return res;
   }
 

@@ -17,7 +17,6 @@ class _HomePageState extends State<HomePage> {
     Color primaryColor = Theme.of(context).primaryColor;
     final pwdProvider = Provider.of<PasswordProvider>(context);
     final historyList = pwdProvider.historyList;
-    print(historyList);
 
     return Scaffold(
         appBar: AppBar(
