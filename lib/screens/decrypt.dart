@@ -95,12 +95,13 @@ class _DecryptPageState extends State<DecryptPage> {
                   ),
                   onPressed: () async {
                     String passkey = passkeyController.text;
-                    final file = File(widget.filePath);
-                    String contents = file.readAsStringSync();
-                    final encrypted = decrypt.Encrypted.fromBase64(contents);
-                    final key = decrypt.Key.fromUtf8(passkey.padRight(32));
-                    final decrypter = decrypt.Encrypter(decrypt.AES(key));
+
                     try {
+                      final file = File(widget.filePath);
+                      String contents = file.readAsStringSync();
+                      final encrypted = decrypt.Encrypted.fromBase64(contents);
+                      final key = decrypt.Key.fromUtf8(passkey.padRight(32));
+                      final decrypter = decrypt.Encrypter(decrypt.AES(key));
                       final decrypted = decrypter.decrypt(encrypted,
                           iv: decrypt.IV.fromLength(16));
                       pwdProvider.loadPasswords(decrypted);
@@ -114,6 +115,30 @@ class _DecryptPageState extends State<DecryptPage> {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) => ListPage()));
+                    } on FileSystemException catch (e) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                "File doesn't exist!",
+                                style: TextStyle(
+                                    fontFamily: "Title", color: primaryColor),
+                              ),
+                              content: Text(
+                                "File: ${widget.filePath}",
+                                style: TextStyle(fontFamily: "Subtitle"),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Dismiss"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });
                     } catch (e) {
                       showDialog(
                           context: context,
@@ -125,7 +150,7 @@ class _DecryptPageState extends State<DecryptPage> {
                                     fontFamily: "Title", color: primaryColor),
                               ),
                               content: Text(
-                                "Wrong PassKey: $passkey",
+                                "PassKey: $passkey",
                                 style: TextStyle(fontFamily: "Subtitle"),
                               ),
                               actions: <Widget>[
