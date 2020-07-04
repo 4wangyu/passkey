@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
+                const SizedBox(height: 20),
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 30,

@@ -32,6 +32,7 @@ class _ListPageState extends State<ListPage> {
     final pwdProvider = Provider.of<PasswordProvider>(context);
     final passwords = pwdProvider.getPasswords();
     final filteredPwds = _filterPwds(passwords);
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: search
@@ -70,22 +71,32 @@ class _ListPageState extends State<ListPage> {
                 pwdProvider.getFileName() ?? 'Passwords',
                 style: TextStyle(
                     fontFamily: "Title", fontSize: 28, color: primaryColor),
-                overflow: TextOverflow.ellipsis,
               ),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    setState(() {
-                      search = true;
-                    });
-                  },
-                ),
+              actions: <Widget>[
+                width < 100
+                    ? SizedBox.shrink()
+                    : IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            search = true;
+                          });
+                        },
+                      ),
                 PopupMenuButton(
                   onSelected: (func) {
                     func();
                   },
                   itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text('Go to Home'),
+                      value: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => HomePage()));
+                      },
+                    ),
                     PopupMenuItem(
                       child: Text('New File'),
                       value: () {
@@ -122,15 +133,6 @@ class _ListPageState extends State<ListPage> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     EncryptPage(false)));
-                      },
-                    ),
-                    PopupMenuItem(
-                      child: Text('Go to Home'),
-                      value: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => HomePage()));
                       },
                     ),
                   ],
