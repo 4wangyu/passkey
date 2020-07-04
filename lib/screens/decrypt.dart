@@ -115,7 +115,7 @@ class _DecryptPageState extends State<DecryptPage> {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) => ListPage()));
-                    } on FileSystemException catch (e) {
+                    } on FileSystemException {
                       showDialog(
                           context: context,
                           builder: (context) {
