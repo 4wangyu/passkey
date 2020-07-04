@@ -22,8 +22,8 @@ class PasswordProvider with ChangeNotifier {
   void loadHistoryList() {
     _historyDatabase.getRecentHistory().then((hl) {
       historyList = hl;
+      notifyListeners();
     });
-    notifyListeners();
   }
 
   String getFilePath() {

@@ -15,9 +15,4 @@ class History {
     this.path = map["path"];
     this.date = map["date"];
   }
-
-  History.fromObj(dynamic obj) {
-    this.path = obj["id"];
-    this.date = obj["date"];
-  }
 }
