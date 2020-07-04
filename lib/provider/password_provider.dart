@@ -33,8 +33,10 @@ class PasswordProvider with ChangeNotifier {
   void setFilePath(String fp) {
     _filePath = fp;
     _historyDatabase
-        .saveHistory(History(fp, DateTime.now().millisecondsSinceEpoch));
-    loadHistoryList();
+        .saveHistory(History(fp, DateTime.now().millisecondsSinceEpoch))
+        .then((value) {
+      loadHistoryList();
+    });
   }
 
   String getFileName() {
